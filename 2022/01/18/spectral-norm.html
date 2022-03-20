@@ -19,7 +19,7 @@
 <script type="application/ld+json">
 {"url":"https://atom-101.github.io/fastblog/2022/01/18/spectral-norm.html","headline":"Spectral Normalization","dateModified":"2022-01-18T00:00:00-06:00","datePublished":"2022-01-18T00:00:00-06:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://atom-101.github.io/fastblog/2022/01/18/spectral-norm.html"},"author":{"@type":"Person","name":"Atmadeep Banerjee"},"description":"Post about spectral norm","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://atom-101.github.io/fastblog/feed.xml" title="My personal blog" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="/fastblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://atom-101.github.io/fastblog/feed.xml" title="My personal blog" /><link rel="shortcut icon" type="image/x-icon" href="/fastblog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
@@ -70,7 +70,7 @@ window.onload = wrap_img;
 </head>
 <body><header class="site-header">
 
-  <div class="wrapper"><a class="site-title" rel="author" href="/">My personal blog</a><nav class="site-nav">
+  <div class="wrapper"><a class="site-title" rel="author" href="/fastblog/">My personal blog</a><nav class="site-nav">
         <input type="checkbox" id="nav-trigger" class="nav-trigger" />
         <label for="nav-trigger">
           <span class="menu-icon">
@@ -80,7 +80,7 @@ window.onload = wrap_img;
           </span>
         </label>
 
-        <div class="trigger"><a class="page-link" href="/about/">About Me</a><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+        <div class="trigger"><a class="page-link" href="/fastblog/about/">About Me</a><a class="page-link" href="/fastblog/search/">Search</a><a class="page-link" href="/fastblog/categories/">Tags</a></div>
       </nav></div>
 </header>
 <main class="page-content" aria-label="Content">
@@ -147,11 +147,11 @@ $$
 </p></div><p>That is, the norm of a vector $x$ being acted upon by the matrix $M$ grows by atmost $||M||_2$ times. Since we have limited $||M||_2$ to 1, we have limited the amount by which the norm of $x$ can grow.</p>
 <p>This effect is illustrated in the following figures. Fig-1 (taken from <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition">here</a>) illustrates the action of a matrix $M$ on a unit radius disk.</p>
 <figure>
-    <img src="/images/copied_from_nb/data/spectral_norm/Wikipedia-Singular-Value-Decomposition.svg.png" width="500" />
+    <img src="/images/spectral_norm/Wikipedia-Singular-Value-Decomposition.svg.png" width="500" />
     <figcaption>Fig-1: Linear transformation</figcaption>
 </figure><p>Let us take a vector $\vec{x_1}$ on this disk. Fig-2 shows how this vector gets transformed by M. After being rotated by $V^T$, $\vec{x_1}$ becomes aligned with the x-axis. This means that $\Sigma$ stretches its entire magnitude by $\sigma_1$ since the component of $V^T\vec{x_1}$ along y-axis is $0$. Since $U$ is another orthogonal matrix that preserves magnitudes, $\vec{x_1}$ got the maximum possible magnitude increase after being acted upon by matrix $M$, and its magnitude is now $\sigma_1 \cdot |\vec{x_1}|$.</p>
 <figure>
-    <img src="/images/copied_from_nb/data/spectral_norm/svd.png" width="1000" />
+    <img src="/images/spectral_norm/svd.png" width="1000" />
     <figcaption>Fig-2: Max stretching</figcaption>
 </figure><p>Now let's prove the inequality mathematically. Let</p>
 <div><p>
@@ -232,7 +232,7 @@ $$
 <h3 id="Multi-task-Learning">Multi-task Learning<a class="anchor-link" href="#Multi-task-Learning"> </a></h3><p>In multi-task learning we often have a common body that projects input data to a common latent space, and multiple task-specific heads for task-specific outputs. For these models, it is important for the common latent space to capture information that is useful for <em>all</em> the heads. Otherwise the model won't do equally well for all the tasks.</p>
 <p>A simple way to prevent one task from dominating over others is to apply weights to the losses so that all the losses have gradients that are similar in magnitude. But, tuning loss weights only affects the initial gradients for each task. The final gradients received by the common body is the sum of gradients backpropagated through each task head. If the weights in any one head are such that they scale their gradient to have a disproportionately large magnitude, this task will dominate the final gradients received by the common body. This can make tuning the loss weights non-intuitive. It is possible for spectral normalization to help in this case. Spectral norm when applied to each of the task-specific heads, prevents the weights in each head from scaling the common latent vector too differently (think of each head to be rotating the latent vector without affecting its magnitude too much). This forces the heads to cooperate and prevents any one head from dominating, since if the spectral norm of weights in one head grows disproportionately, the gradients from that head can potentially have a much larger magnitude, causing it to dominate the total gradient.</p>
 <figure>
-    <img src="/images/copied_from_nb/data/spectral_norm/Group Training.png" height="300" />
+    <img src="/images/spectral_norm/Group Training.png" height="300" />
     <figcaption>Fig-3: Multi-task learning</figcaption>
 </figure><p>Fig-3 shows a graph from a paper <a class="citation" href="#InceptionXML">[4]</a> (authored by yours truly) that gives empirical evidence of this phenomenon. Applying spectral norm brings the precision of the 2 different tasks in our model closer together. The dashed lines represent the original pipeline without spectral norm. The solid lines represent our modified training pipeline that uses spectral norm.</p>
 <h3 id="Possibly-Transfer-Learning">Possibly Transfer Learning<a class="anchor-link" href="#Possibly-Transfer-Learning"> </a></h3><p>The idea of using spectral norm for transfer learning has <em>sort of</em> been proposed by Dahiya et al. in <a class="citation" href="#Astec">[5]</a>. It is another paper in the same domain as <a class="citation" href="#InceptionXML">[4]</a>. While our approach was to learn the two tasks in parallel, creating a multi-task problem, <a class="citation" href="#Astec">[5]</a> learns the tasks sequentially. For this they needed to make sure that when training the model for the second task, it does not lose performance on the first task. To achieve this, they use spectral norm on their weight layers. <a class="citation" href="#Astec">[5]</a> proves that using spectral norm prevents the initially trained weights from drifting too far away and the model can do well on both tasks.</p>
@@ -317,21 +317,21 @@ $$
         theme="github-light"
         crossorigin="anonymous"
         async>
-</script><a class="u-url" href="/2022/01/18/spectral-norm.html" hidden></a>
+</script><a class="u-url" href="/fastblog/2022/01/18/spectral-norm.html" hidden></a>
 </article>
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
+  <data class="u-url" href="/fastblog/"></data>
 
   <div class="wrapper">
 
     <div class="footer-col-wrapper">
       <div class="footer-col">
         <p class="feed-subscribe">
-          <a href="/feed.xml">
+          <a href="/fastblog/feed.xml">
             <svg class="svg-icon orange">
-              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+              <use xlink:href="/fastblog/assets/minima-social-icons.svg#rss"></use>
             </svg><span>Subscribe</span>
           </a>
         </p>
@@ -341,7 +341,7 @@ $$
       </div>
     </div>
 
-    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/Atom-101" target="_blank" title="Atom-101"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/Atom-101" target="_blank" title="Atom-101"><svg class="svg-icon grey"><use xlink:href="/fastblog/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
 </div>
 
   </div>
