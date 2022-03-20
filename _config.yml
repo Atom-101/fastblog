@@ -6,15 +6,15 @@
 # https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
 # https://learnxinyminutes.com/docs/yaml/
 
-title: fastpages
-description: An easy to use blogging platform with support for Jupyter Notebooks.
-github_username: fastai
+title: My personal blog
+description: Check out my github then down below
+github_username: Atom-101
 # you can comment the below line out if your repo name is not different than your baseurl
-github_repo: "fastpages"
+#github_repo: "fastpages"
 
 # OPTIONAL: override baseurl and url if using a custom domain
 # Note: leave out the trailing / from this value. 
-url: "https://fastpages.fast.ai" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://github.com/Atom-101/fastblog" # the base hostname & protocol for your site, e.g. http://example.com
 
 ###########################################################
 #########  Special Instructions for baseurl ###############
@@ -39,11 +39,11 @@ baseurl: "" # the subpath of your site, e.g. "/blog".
 # Github and twitter are optional:
 minima:
   social_links:
-    twitter: fastdotai
-    github: fastai
+    # twitter: abanerjee99
+    github: Atom-101
 
 # Set this to true to get LaTeX math equation support
-use_math: 
+use_math: true
 
 # Set this to true to display the summary of your blog post under your title on the Home page.
 show_description: true
@@ -83,6 +83,7 @@ html_escape:
 # Everything below here should be left alone. Modifications may break fastpages
 future: true
 theme: minima
+# theme: jekyll-theme-clean-blog
 plugins:
   - jekyll-feed
   - jekyll-gist
@@ -95,6 +96,7 @@ plugins:
   - jekyll-paginate
   - jekyll-sitemap
   - jemoji
+  - jekyll-scholar
 
 # See https://jekyllrb.com/docs/pagination/
 # For pagination to work, you cannot have index.md at the root of your repo, instead you must rename this file to index.html
@@ -102,6 +104,7 @@ paginate: 15
 paginate_path: /page:num/
 
 remote_theme: jekyll/minima
+# remote_theme: jekyll/jekyll-theme-clean-blog
 
 titles_from_headings:
   enabled:     true
@@ -124,3 +127,6 @@ feed:
   
 exclude:
   - settings.ini
+  
+scholar:
+    style: ieee
