@@ -1,0 +1,1 @@
+Sitemap: https://atom-101.github.io/fastblog/sitemap.xml
