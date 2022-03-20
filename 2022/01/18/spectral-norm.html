@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Spectral Normalization | My personal blog</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Spectral Normalization" />
+<meta name="author" content="Atmadeep Banerjee" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Post about spectral norm" />
+<meta property="og:description" content="Post about spectral norm" />
+<link rel="canonical" href="https://atom-101.github.io/fastblog/2022/01/18/spectral-norm.html" />
+<meta property="og:url" content="https://atom-101.github.io/fastblog/2022/01/18/spectral-norm.html" />
+<meta property="og:site_name" content="My personal blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-18T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://atom-101.github.io/fastblog/2022/01/18/spectral-norm.html","headline":"Spectral Normalization","dateModified":"2022-01-18T00:00:00-06:00","datePublished":"2022-01-18T00:00:00-06:00","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://atom-101.github.io/fastblog/2022/01/18/spectral-norm.html"},"author":{"@type":"Person","name":"Atmadeep Banerjee"},"description":"Post about spectral norm","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/fastblog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://atom-101.github.io/fastblog/feed.xml" title="My personal blog" /><link rel="shortcut icon" type="image/x-icon" href="/fastblog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/fastblog/">My personal blog</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/fastblog/about/">About Me</a><a class="page-link" href="/fastblog/search/">Search</a><a class="page-link" href="/fastblog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Spectral Normalization</h1><p class="page-description">Post about spectral norm</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-01-18T00:00:00-06:00" itemprop="datePublished">
+        Jan 18, 2022
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Atmadeep Banerjee</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      16 min read
+    
+</span></p>
+
+    
+
+    
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-01-18-spectral-norm.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Spectral normalization is one of the many kinds of normalization operations that can be used in a deep learning model. In fact, it can be thought of as both a regularization <em>and</em> normalization technique. If you have ever asked yourself what spectral norm does or when we should use it over, say batch normalization, then read on.</p>
+<h2 id="Norms-and-Normalizations">Norms and Normalizations<a class="anchor-link" href="#Norms-and-Normalizations"> </a></h2><p>Before we get into Spectral Normalization let's define what a norm is. According to the Deep Learning Book, a norm is a function used to measure the "size" of vectors. Mathematically, it is a function that maps from a complex vector space to non-negative real numbers. It is denoted with single bar ($|.|$) or double bar ($\|.\|$). For a function to qualify as norm it has to have 3 properties:</p>
+<ol>
+<li>$|x| = 0$, iff $x=0$</li>
+<li>$|kx| = |k|\cdot|x|, k \in \mathbb{R}$</li>
+<li><p>$|x + y| \leq |x| + |y|$</p>
+<p>Note that a matrix norm is <em>not</em> the same thing as a vector norm. I must have dozed off during this part in college, but this difference is important for the notation of spectral norm. Usually, <!--&ndash; but not always &ndash;--> vector norms are denoted with $|.|$ while matrix norms are denoted with $\|.\|$. For a function to qualify as a matrix norm it needs to follow an extra property:</p>
+</li>
+<li>$\|AB\| \leq \|A\|\cdot\|B\|$</li>
+</ol>
+<p>Now lets's talk about normalization. In the context of deep learning, normalization usually refers to scaling and shifting of either feature maps or weight matrices. For deep models the goal of normalization is to make training easier through some mechanism like reducing internal covariate shift or reducing vanishing/exploding gradients. In deep learning we often use "norm" and "normalization" interchangeably. Batch norm or Instance norm are not "norms" according to the mathematical definition. They are "normalization" methods. That is, they scale internal feature maps to ensure that they have zero mean and unit variance.</p>
+<p>"Spectral norm" on the other hand is an overloaded term that can mean both a mathematical norm or a normalization method, depending on the context. In the mathematical norm sense it refers to the largest singular value of a matrix. In the normalization sense, it refers to dividing a matrix by it's largest singular value (to get a matrix whose singular values are $\leq 1$).</p>
+<p>If you thought that's confusing, let's talk about the mathematical notation for spectral norm. $L_p$ norms for vectors are usually denoted as $|x|_p$. The very commonly used $L_2$ norm, also known as Euclidean norm, is often denoted as $\|x\|_2$ or simply $\|x\|$. <em>But</em>, for matrices, the Euclidean norm, also known as the Frobenius norm, is denoted with $\|A\|_F$, while $\|A\|_2$ denotes the spectral norm. Not confusing at all!</p>
+<p>But seriously, there is a reason for this notation. $L_p$ norms for matrices is yet another overloaded term that can mean 3 different things(<a href="https://en.wikipedia.org/wiki/Matrix_norm#Matrix_norms_induced_by_vector_norms">1</a>, <a href="https://en.wikipedia.org/wiki/Matrix_norm#%22Entry-wise%22_matrix_norms">2</a> and <a href="https://en.wikipedia.org/wiki/Matrix_norm#Schatten_norms">3</a>). In deep learning when we calculate $L_p$ norms of n-dimensional tensors, we implicitly refer to the vector norms calculated after flattening the tensor. Wikipedia refers to this as entry-wise matrix norms and denotes it as $L_{p,p}$ norm for matrices (maybe $L_{p,p...\text{n times}}$ for $n$-dimensional tensors?). Under this more precise definition Euclidean norm is the $L_{2,2}$ matrix norm while spectral norm is the $L_{2}$ matrix norm.</p>
+<h2 id="Intuition-and-math">Intuition and math<a class="anchor-link" href="#Intuition-and-math"> </a></h2><p>So what does it mean when someone adds "spectral norm" to their deep learning model? It simply means that the weights of the model will be matrices with unit spectral norm. Note that there is no "spectral norm layer" like batch norm or instance norm. Similar to weight normalization, spectral normalization modifies the <strong><em>weights</em></strong> of a linear or convolution layer, instead of its <strong><em>outputs</em></strong>. But what effect does adding spectral normalization <em>actually</em> have on the model? In this section, I will try to explain the intuition behind spectral normalization. Please note that this is only my understanding and I am happy to be corrected if you see any errors.</p>
+<h3 id="Singular-Value-Decomposition">Singular Value Decomposition<a class="anchor-link" href="#Singular-Value-Decomposition"> </a></h3><p>To understand what spectral normalization is doing to a weight matrix we need to look at the singular value decomposition of the weight matrix. As a quick overview, SVD allows us to decompose any matrix $M$ into a product of 3 matrices</p>
+<div><p>
+$$
+    M = U \cdot \Sigma \cdot V^T
+$$
+</p></div><p>For a real $M$, the matrices $U$ and $V$ are orthogonal and $\Sigma$ is a diagonal matrix containing the singular values. The singular values are always $\geq 0$.</p>
+<p>Now, if $M$ is a weight matrix in a neural network, it can also be thought of as a linear transformation acting on an input feature map. In this case, performing SVD on $M$ allows us to decompose this linear transformation into 3 parts: a rotation, a coordinate scaling and a second rotation. So what happens if we now add the constraint of spectral normalization on $M$? We divide $M$ by $max(\Sigma)$ to get a new matrix $M_{norm}$. The singular values of $M_{norm}$ are in range $[0,1]$. This means that we have limited the ability of our weight matrix to scale the input feature map, while keeping its ability to rotate it unconstrained.</p>
+<p>This keeps gradient explosion in check by ensuring each layer scales input feature maps (and gradients in backward pass) by a limited amount. Mathematically this can be expressed by the inequality:</p>
+<div><p>
+$$
+    \|M\cdot x\| \leq \|M\|_2 \cdot \|x\|
+$$
+</p></div><p>That is, the norm of a vector $x$ being acted upon by the matrix $M$ grows by atmost $||M||_2$ times. Since we have limited $||M||_2$ to 1, we have limited the amount by which the norm of $x$ can grow.</p>
+<p>This effect is illustrated in the following figures. Fig-1 (taken from <a href="https://en.wikipedia.org/wiki/Singular_value_decomposition">here</a>) illustrates the action of a matrix $M$ on a unit radius disk.</p>
+<figure>
+    <img src="/images/copied_from_nb/data/spectral_norm/Wikipedia-Singular-Value-Decomposition.svg.png" width="500" />
+    <figcaption>Fig-1: Linear transformation</figcaption>
+</figure><p>Let us take a vector $\vec{x_1}$ on this disk. Fig-2 shows how this vector gets transformed by M. After being rotated by $V^T$, $\vec{x_1}$ becomes aligned with the x-axis. This means that $\Sigma$ stretches its entire magnitude by $\sigma_1$ since the component of $V^T\vec{x_1}$ along y-axis is $0$. Since $U$ is another orthogonal matrix that preserves magnitudes, $\vec{x_1}$ got the maximum possible magnitude increase after being acted upon by matrix $M$, and its magnitude is now $\sigma_1 \cdot |\vec{x_1}|$.</p>
+<figure>
+    <img src="/images/copied_from_nb/data/spectral_norm/svd.png" width="1000" />
+    <figcaption>Fig-2: Max stretching</figcaption>
+</figure><p>Now let's prove the inequality mathematically. Let</p>
+<div><p>
+$$
+    \vec{x_1} = p\hat{i} + q\hat{j}
+$$
+</p></div><p>where $\hat{i}$ and $\hat{j}$ are unit vectors along x and y-axes respectively (i.e., they form the orthonormal base for the 2D vector space) and</p>
+<div><p>
+$$
+    V^T\vec{x_1} = a\hat{i} + b\hat{j}
+$$
+</p></div><p>Since $V$, and hence $V^T$, is orthogonal</p>
+<div>
+<p>
+$$
+\begin{aligned}
+
+|V^T\vec{x_1}| &amp;= |\vec{x_1}|\\
+
+\Rightarrow \; a^2 + b^2 &amp;= p^2 + q^2 = C
+
+\end{aligned}
+$$
+</p>
+</div><p>Now, let $f = |\Sigma V^T\vec{x_1}| = \sqrt{\sigma_1^2a^2 + \sigma_2^2b^2}$</p>
+<p>We need to maximize $f$ wrt $a, b$</p>
+<div>
+<p>
+$$
+\begin{aligned}
+\underset {a,b}{\operatorname {arg\,max} } \; f^2 &amp;= \sigma_1^2a^2 + \sigma_2^2b^2\\
+
+&amp;= (\sigma_1^2 - \sigma_2^2)a^2 + \sigma_2^2(a^2 + b^2)\\
+
+&amp;= (\sigma_1^2 - \sigma_2^2)a^2 + \sigma_2^2C
+\end{aligned}
+$$
+</p>
+</div><p>So, to maximize $f$ we need to maximize $a$</p>
+<div>
+<p>
+$$
+\begin{aligned}
+
+&amp; \underset {a}{\operatorname {arg\,max} } \; a^2 + b^2 = C\\
+\Rightarrow &amp; \; a = \sqrt{C}, b=0
+
+\end{aligned}
+$$
+</p>
+</div><p>Therefore, the maximum value of $f = \sigma_1\sqrt{C} = \sigma_1|V^T\vec{x_1}| = \sigma_1|\vec{x_1}|$</p>
+<p>Finally, since $U$ is also orthogonal,</p>
+<div><p>
+$$
+    \max |U\Sigma V^T\vec{x_1}| = \max |\Sigma V^T\vec{x_1}| = \sigma_1|\vec{x_1}|
+$$
+</p></div><h3 id="Lipschitz-Continuity">Lipschitz Continuity<a class="anchor-link" href="#Lipschitz-Continuity"> </a></h3><p>While spectral normalization acts as a normalization method by keeping gradient explosion in check, it also acts as a powerful regularization method. This is because several weight matrices $W$ can map to the same normalized matrix $W_{norm}$. Thus spectral norm constrains the space of weights.</p>
+<p>In fact, spectral normalization constrains neural networks to model only a <em>specific</em> family of functions called Lipschitz continuous functions. A $K$-Lipschitz continuous function is a function whose slope between any two points is always $\leq K$. This $K$ is called the Lipschitz constant of the function. A neural network with spectral normalization always forms a Lipschitz continuous functions because of the following 3 properties:</p>
+<ol>
+<li>The Lipschitz constant for linear layers is equal to the spectral norm of their weight matrices.</li>
+<li>The Lipschitz constant of a composition of functions $f \circ g \leq$ Lipschitz constant of $f \times$ Lipschitz constant of $g$</li>
+<li>The Lipschitz constant for activation functions like ReLU and pooling layers is $1$. </li>
+</ol>
+<p>In a neural network with spectral normalization, property 1 ensures that each individual weight layer is $1$-Lipschitz while properties 2 and 3 ensure that the entire arbitrary sized model is also Lipschitz continuous. Why is it important to model only Lipschitz continuous functions? The use cases are explained in the next section.</p>
+<!-- ![](data/spectral_norm/Wikipedia-Singular-Value-Decomposition.svg.png) -->
+<!-- <div>
+    <img src="/images/copied_from_nb/data/spectral_norm/Wikipedia-Singular-Value-Decomposition.svg.png" width="500"/>
+</div> -->
+
+
+
+<h2 id="When-to-use-Spectral-Normalization?">When to use Spectral Normalization?<a class="anchor-link" href="#When-to-use-Spectral-Normalization?"> </a></h2><p>This is probably the most important part of this post. But unfortunately, like most things in deep learning there is no specific answer to this question. From the intuition above, spectral norm's purpose can be understood to constrain the weight space of a neural network. It can find a use wherever this property is desired.</p>
+<h3 id="Generative-models-and-reinforcement-learning">Generative models and reinforcement learning<a class="anchor-link" href="#Generative-models-and-reinforcement-learning"> </a></h3><p>The most common use case for spectral normalization is in GANs. Miyato et al. <a class="citation" href="#spectral_paper">[1]</a> proved that adding spectral normalization to the layers of a discriminator leads to more stable training of GANs. Here's how: In GANs, the generator does not directly receve any gradients because we do not have any ground truth for it. The only way it receives gradients is through the discriminator. This is why it is important for the derivative of the discriminator to be bounded, otherwise the generator can become unstable. But the function modelled by a normal neural network doesn't need to have bounded derivatives.</p>
+<p>Enter Lipschitz continuity. As mentioned before, a $K$-Lipschitz continuous function is a function whose slope between any 2 points is always $\leq K$. In other words, these functions have bounded derivatives. Using spectral normalization, we can constrain the discriminator to <em>only</em> model Lipschitz continuous functions.</p>
+<p>This concept of Lipschitz continuity doesn't have to be limited to GANs. If some other application requires this constraint, spectral normalization can help. In fact Lipschitz continuity just refers to "smooth" functions. If a task requires a neural network to model only "smooth" functions, spectral norm is useful.</p>
+<p>Zhang et al. <a class="citation" href="#SAGAN">[2]</a> went beyond <a class="citation" href="#spectral_paper">[1]</a> and showed that it is useful to apply spectral normalization to generators as well. While there is no mathematical proof behind why the generator should be regularized, the authors hypothesize that spectral normalization prevents the magnitude of weights from growing too large and prevents unusual gradients.</p>
+<p>Gogianu et al. <a class="citation" href="#rl_paper">[3]</a> show that applying spectral normalization to a Deep-Q-Network improves performance of reinforcement learning. A Q-Network is a neural network that assigns values to all the actions an agent can take while in its current state. It allows the agent to find an optimal action at every step. Turns out applying spectral norm also helps performance here. The authors also point out that unlike the discriminator of GANs, there is no need for a Q-network to be super smooth. They find it is more beneficial to control the smoothness by applying spectral norm to only a few layers of the network.</p>
+<h3 id="Multi-task-Learning">Multi-task Learning<a class="anchor-link" href="#Multi-task-Learning"> </a></h3><p>In multi-task learning we often have a common body that projects input data to a common latent space, and multiple task-specific heads for task-specific outputs. For these models, it is important for the common latent space to capture information that is useful for <em>all</em> the heads. Otherwise the model won't do equally well for all the tasks.</p>
+<p>A simple way to prevent one task from dominating over others is to apply weights to the losses so that all the losses have gradients that are similar in magnitude. But, tuning loss weights only affects the initial gradients for each task. The final gradients received by the common body is the sum of gradients backpropagated through each task head. If the weights in any one head are such that they scale their gradient to have a disproportionately large magnitude, this task will dominate the final gradients received by the common body. This can make tuning the loss weights non-intuitive. It is possible for spectral normalization to help in this case. Spectral norm when applied to each of the task-specific heads, prevents the weights in each head from scaling the common latent vector too differently (think of each head to be rotating the latent vector without affecting its magnitude too much). This forces the heads to cooperate and prevents any one head from dominating, since if the spectral norm of weights in one head grows disproportionately, the gradients from that head can potentially have a much larger magnitude, causing it to dominate the total gradient.</p>
+<figure>
+    <img src="/images/copied_from_nb/data/spectral_norm/Group Training.png" height="300" />
+    <figcaption>Fig-3: Multi-task learning</figcaption>
+</figure><p>Fig-3 shows a graph from a paper <a class="citation" href="#InceptionXML">[4]</a> (authored by yours truly) that gives empirical evidence of this phenomenon. Applying spectral norm brings the precision of the 2 different tasks in our model closer together. The dashed lines represent the original pipeline without spectral norm. The solid lines represent our modified training pipeline that uses spectral norm.</p>
+<h3 id="Possibly-Transfer-Learning">Possibly Transfer Learning<a class="anchor-link" href="#Possibly-Transfer-Learning"> </a></h3><p>The idea of using spectral norm for transfer learning has <em>sort of</em> been proposed by Dahiya et al. in <a class="citation" href="#Astec">[5]</a>. It is another paper in the same domain as <a class="citation" href="#InceptionXML">[4]</a>. While our approach was to learn the two tasks in parallel, creating a multi-task problem, <a class="citation" href="#Astec">[5]</a> learns the tasks sequentially. For this they needed to make sure that when training the model for the second task, it does not lose performance on the first task. To achieve this, they use spectral norm on their weight layers. <a class="citation" href="#Astec">[5]</a> proves that using spectral norm prevents the initially trained weights from drifting too far away and the model can do well on both tasks.</p>
+<p><a class="citation" href="#Astec">[5]</a> trains a small model with a single weight layer and applies spectral norm to it. There is a possibility that we can scale up this idea of reducing weight drift to larger models as well. It might be possible to take a CNN pretrained on Imagenet and train it on a new dataset while retaining close to the original performance on imagenet. That is, spectral norm might offer a way to reduce catastrophic forgetting.</p>
+<p>To test this I ran some experiments with the MIT Indoor Scene Recognition dataset <a class="citation" href="#IndoorScenes">[6]</a>. This dataset is sufficiently different from Imagenet. Standard pretrained resnet models are not trained with spectral normalization and simply adding spectral normalization to a pretrained model degrades performance. Training on imagenet with spectral normalization is also not a good idea because spectral normalization decreases classification performance over batch norm (because of overly strong regularization). One solution is to take a normal pretrained model and calculate the initial spectral norm of each weight layer as $\sigma_W$. Now, instead of limiting this spectral norm to be in range $[0,1]$, we can limit it to be in range $[0, \sigma_W]$. The batch norm layers can be frozen to act as simple affine layers.</p>
+<p>Results were inconclusive with these experiments. Adding this kind of spectral normalization to a classifier causes it to not train at all for the first few epochs and then improve rapidly to match the performance of standard transfer learning, without spectral normalization.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Pytorch-implementation">Pytorch implementation<a class="anchor-link" href="#Pytorch-implementation"> </a></h2><p>Not much is needed to be said here. "Implementing" spectral norm to a model is as simple as changing one line of code.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># from this</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># to this</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">spectral_norm</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A small thing to be noted here is <em>how</em> Pytorch implements spectral norm. First the weight matrix is reshaped to 2D. Then the first vectors of both $U$ and $V$ are calculated.</p>
+<div><p>
+$$
+    \sigma = u^T \cdot W \cdot v
+$$
+</p></div><p>To approximate $\vec{u}$ and $\vec{v}$ torch uses the power method. Torch initializes both vectors with random values and performs the following two steps $n$-times:</p>
+<div><p>
+$$
+    \begin{aligned}
+        \vec{u} &amp;= W \cdot \vec{v} \\
+        \vec{v} &amp;= W^T \cdot \vec{u}
+    \end{aligned}
+$$
+</p></div><p>This calculation happens on every forward pass during train time. During eval, torch uses cached values for $\vec{u}$ and $\vec{v}$. Since torch caches the vectors, the state dict of an nn.Module using spectral norm will have two extra keys: 'weight_u' and 'weight_v'. The unnormalized weight is stored with key 'weight_orig' instead of 'weight' and the normalized weight is calculated on the fly.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion"> </a></h2><p>To sum up, Spectral Norm is a way to normalize the weights of a deep neural network, instead of its activations. It prevents gradient explosion and, if used on all layers of a network, forces it to model only Lipschitz continuous functions. It can be used for multi-task learning and any other situations where the weights of independent neural networks layers need a "soft tying".</p>
+<p>That said, just like most things in deep learning, your mileage will vary. The regularization produced by spectral norm is quite strong and can hurt performance for "standard" tasks like classification and image segmentation. If your task has no precedent of using spectral norm, use it only if you are feeling adventurous.</p>
+<h2 id="References">References<a class="anchor-link" href="#References"> </a></h2><p><ol class="bibliography"><li><span id="spectral_paper">[1]T. Miyato, T. Kataoka, M. Koyama, and Y. Yoshida, “Spectral Normalization for Generative Adversarial Networks,” <i>ArXiv</i>, vol. abs/1802.05957, 2018.</span></li>
+<li><span id="SAGAN">[2]H. Zhang, I. J. Goodfellow, D. N. Metaxas, and A. Odena, “Self-Attention Generative Adversarial Networks,” 2019.</span></li>
+<li><span id="rl_paper">[3]F. Gogianu, T. Berariu, M. Rosca, C. Clopath, L. Buşoniu, and R. Pascanu, “Spectral Normalisation for Deep Reinforcement Learning: an Optimisation Perspective,” 2021.</span></li>
+<li><span id="InceptionXML">[4]S. Kharbanda, A. Banerjee, A. Palrecha, and R. Babbar, “Embedding Convolutions for Short Text Extreme Classification with Millions of Labels,” <i>ArXiv</i>, vol. abs/2109.07319, 2021.</span></li>
+<li><span id="Astec">[5]K. Dahiya <i>et al.</i>, “DeepXML: A Deep Extreme Multi-Label Learning Framework Applied to Short Text Documents,” <i>Proceedings of the 14th ACM International Conference on Web Search and Data Mining</i>, 2021.</span></li>
+<li><span id="IndoorScenes">[6]A. Quattoni and A. Torralba, “Recognizing indoor scenes,” 2009.</span></li></ol></p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="Atom-101/fastblog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/fastblog/2022/01/18/spectral-norm.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/fastblog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/fastblog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/fastblog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Check out my github then down below</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/Atom-101" target="_blank" title="Atom-101"><svg class="svg-icon grey"><use xlink:href="/fastblog/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
